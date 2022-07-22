@@ -43,7 +43,8 @@ if __name__ == '__main__':
             'mahjong',
             'no-limit-holdem',
             'uno',
-            'gin-rummy'
+            'gin-rummy',
+            'maria'
         ],
     )
     parser.add_argument(
@@ -95,4 +96,3 @@ if __name__ == '__main__':
 
     os.environ["CUDA_VISIBLE_DEVICES"] = args.cuda
     train(args)
-

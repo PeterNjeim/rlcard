@@ -26,6 +26,9 @@ def load_model(model_path, env=None, position=None, device=None):
     elif model_path == 'random':  # Random model
         from rlcard.agents import RandomAgent
         agent = RandomAgent(num_actions=env.num_actions)
+    elif model_path == 'human':  # Human model
+        from rlcard.agents.human_agents.maria_human_agent import HumanAgent
+        agent = HumanAgent(num_actions=env.num_actions)
     else:  # A model in the model zoo
         from rlcard import models
         agent = models.load(model_path).agents[position]
@@ -54,21 +57,39 @@ def evaluate(args):
     for position, reward in enumerate(rewards):
         print(position, args.models[position], reward)
 
+    # Make environment
+    print(">> Maria Defender Novice Rule Model")
+
+    while (True):
+        print(">> Start a new game")
+
+        trajectories, payoffs = env.run(is_training=False)
+        # If the human does not take the final action, we need to print other players action
+        final_state = trajectories[0][-1]
+        action_record = final_state['action_record']
+        state = final_state
+        for i in range(1, len(action_record)+1):
+            if action_record[-i][0] == state['current_player']:
+                break
+        print('===============     Result     ===============')
+        for i, payoff in enumerate(payoffs):
+            if i == 0:
+                print('You have {} points'.format(-payoff))
+            print('Player {} has {} points'.format(i, -payoff))
+        if payoffs[0] == max(payoffs):
+            print('You win!')
+        else:
+            print('You lose!')
+        print('')
+        input("Press any key to continue...")
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("Evaluation example in RLCard")
     parser.add_argument(
         '--env',
         type=str,
-        default='leduc-holdem',
+        default='maria',
         choices=[
-            'blackjack',
-            'leduc-holdem',
-            'limit-holdem',
-            'doudizhu',
-            'mahjong',
-            'no-limit-holdem',
-            'uno',
-            'gin-rummy',
             'maria'
         ],
     )
@@ -76,8 +97,10 @@ if __name__ == '__main__':
         '--models',
         nargs='*',
         default=[
-            'experiments/leduc_holdem_dqn_result/model.pth',
+            'human',
+            'experiments/maria_dqn_result/model.pth',
             'random',
+            'random'
         ],
     )
     parser.add_argument(
@@ -93,7 +116,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--num_games',
         type=int,
-        default=10000,
+        default=1,
     )
 
     args = parser.parse_args()

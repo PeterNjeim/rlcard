@@ -20,7 +20,7 @@ def train(args):
 
     # Check whether gpu is available
     device = get_device()
-        
+
     # Seed numpy, torch, random
     set_seed(args.seed)
 
@@ -111,6 +111,7 @@ if __name__ == '__main__':
             'uno',
             'gin-rummy',
             'bridge',
+            'maria'
         ],
     )
     parser.add_argument(
@@ -157,4 +158,3 @@ if __name__ == '__main__':
 
     os.environ["CUDA_VISIBLE_DEVICES"] = args.cuda
     train(args)
-

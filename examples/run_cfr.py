@@ -1,4 +1,4 @@
-''' An example of solve Leduc Hold'em with CFR (chance sampling)
+''' An example of solve with CFR (chance sampling)
 '''
 import os
 import argparse
@@ -18,14 +18,14 @@ from rlcard.utils import (
 def train(args):
     # Make environments, CFR only supports Leduc Holdem
     env = rlcard.make(
-        'leduc-holdem',
+        args.env,
         config={
             'seed': 0,
             'allow_step_back': True,
         }
     )
     eval_env = rlcard.make(
-        'leduc-holdem',
+        args.env,
         config={
             'seed': 0,
         }
@@ -74,6 +74,22 @@ def train(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("CFR example in RLCard")
     parser.add_argument(
+        '--env',
+        type=str,
+        default='leduc-holdem',
+        choices=[
+            'blackjack',
+            'leduc-holdem',
+            'limit-holdem',
+            'doudizhu',
+            'mahjong',
+            'no-limit-holdem',
+            'uno',
+            'gin-rummy',
+            'maria'
+        ],
+    )
+    parser.add_argument(
         '--seed',
         type=int,
         default=42,
@@ -102,4 +118,3 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     train(args)
-    

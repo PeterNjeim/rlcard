@@ -113,7 +113,7 @@ class UnoRound:
                 elif card.color == target.color:
                     legal_actions.append(card.str)
 
-        # target is aciton card or number card
+        # target is action card or number card
         else:
             for card in hand:
                 if card.type == 'wild':
